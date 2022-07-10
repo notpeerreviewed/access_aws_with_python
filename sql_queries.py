@@ -115,7 +115,7 @@ region 'us-west-2';
 """).format(DWH_ROLE_ARN)
 
 # FINAL TABLES
-
+# ref https://knowledge.udacity.com/questions/851543 for help with the time conversion
 songplay_table_insert = ("""INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent)
 SELECT TIMESTAMP 'epoch' + (events.ts / 1000) * INTERVAL '1 second' as start_time,
 events.userID,
