@@ -53,6 +53,21 @@ redshift = boto3.client('redshift',
 
 def main():
 
+    '''
+        This function creates the redshift cluster for this project.
+        First, an iam role is created
+        Second, we attach the S3 read only access role policy
+        Third, we retrieve the roleArn for use later
+        Fourth, we create the redshift cluster
+
+        For convenience, a while loop has been added to notify users
+        when the cluster status has changed to 'available'.
+
+        Although this function takes no parameters, we have loaded the
+        necessary variables from the config file so we can import this
+        script from subsequent scripts to access the variables
+    '''
+
     ## Create IAM role
     #1.1 Create the role, 
     try:

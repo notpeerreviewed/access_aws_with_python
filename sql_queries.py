@@ -5,10 +5,12 @@ import create_redshift as cr
 
 myClusterProps = cr.redshift.describe_clusters(ClusterIdentifier=cr.DWH_CLUSTER_IDENTIFIER)['Clusters'][0]
 
-## Note cluster endpoint and role arn
-## Note: Do NOT run this until status is "available"
-DWH_ENDPOINT = myClusterProps['Endpoint']['Address']
-DWH_ROLE_ARN = myClusterProps['IamRoles'][0]['IamRoleArn']
+# If statement to avoid querying cluster if status is not 'available'
+if myClusterProps['ClusterStatus'] == 'available':
+    DWH_ENDPOINT = myClusterProps['Endpoint']['Address']
+    DWH_ROLE_ARN = myClusterProps['IamRoles'][0]['IamRoleArn']
+else:
+    print("Cluster not currently available. Please check status before proceeding.")
 
 # DROP TABLES
 

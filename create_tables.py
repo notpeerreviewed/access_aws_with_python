@@ -7,20 +7,42 @@ from db_connection import create_connection
 
 
 def drop_tables(cur, conn):
+    '''
+        Drop tables in preparation of new table creation
+    '''
     for query in drop_table_queries:
         cur.execute(query)
         conn.commit()
 
 
 def create_tables(cur, conn):
+    '''
+        Create new tables using the table creation SQL statements 
+        from sql_queries.py
+    '''
+
     for query in create_table_queries:
         cur.execute(query)
         conn.commit()
 
 
 def main():
+    '''
+        Create the connection to the database
+        Execute the drop_tables function 
+        Execute the create_tables function
+        Close the database connection
+    '''
+
+    try: 
+        myClusterProps = cr.redshift.describe_clusters(ClusterIdentifier=cr.DWH_CLUSTER_IDENTIFIER)['Clusters'][0]
+    except Exception as e:
+        myClusterProps['ClusterStatus'] = None
     
-    myClusterProps = cr.redshift.describe_clusters(ClusterIdentifier=cr.DWH_CLUSTER_IDENTIFIER)['Clusters'][0]
+    if myClusterProps['ClusterStatus'] != 'available':
+        return "Please run create_redshift.py to create a new redshift cluster before running this script."
+
+    
     DWH_ENDPOINT = myClusterProps['Endpoint']['Address']
 
     # connect to database

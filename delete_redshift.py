@@ -4,6 +4,15 @@ from botocore.exceptions import ClientError
 import create_redshift as cr
 
 def prettyRedshiftProps(props):
+    '''
+        Helper function to retrieve cluster properties
+
+        Parameters:
+            props: a list of properties to retrieve from the cluster
+
+        Returns:
+            a pandas dataframe showing the cluster key and value for each requested property
+    '''
     pd.set_option('display.max_colwidth', None)
     keysToShow = ["ClusterIdentifier", "NodeType", "ClusterStatus", "MasterUsername", "DBName", "Endpoint", "NumberOfNodes", 'VpcId']
     x = [(k, v) for k,v in props.items() if k in keysToShow]
@@ -13,6 +22,10 @@ def prettyRedshiftProps(props):
 # run these lines to delete the redshift cluster and 
 # clean up the iam roles
 def redshift_cleanup():
+    '''
+        Convenience function to easily delete the redshift cluster after
+        user is finished testing
+    '''
     cr.redshift.delete_cluster( ClusterIdentifier=cr.DWH_CLUSTER_IDENTIFIER,  SkipFinalClusterSnapshot=True)
 
     myClusterProps = cr.redshift.describe_clusters(ClusterIdentifier=cr.DWH_CLUSTER_IDENTIFIER)['Clusters'][0]
